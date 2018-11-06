@@ -10,20 +10,26 @@ class App extends Component {
   constructor(){
     super();
 
-    this.state = {gifs: []}
+    this.state = {gifs: []};
+    // this.handleTermChange = this.handleTermChange.bind(this);
   }
-  handleTermChange(term){
+
+  handleTermChange = async (term) => {
     const url = `http://api.giphy.com/v1/gifs/search?q=${term.replace(/\s/g, '+')}&api_key=2rIWz3Iud2RuGJVSjAYlbPZJ7SEcYaM2`;
-    request.get(url, function(err, res) {
-      console.log(res.body.data[0]);
-    });
+    // request.get(url, (err, res) => {
+    //   this.setState({gifs: res.body.data});
+    // });
+    const result = await fetch(url);
+    const parsed = await result.json();
+    console.log(parsed);
+    this.setState({gifs: parsed.data});
   }
 
   render() {
     return (
       <div className="App">
-      <h1>Hello World</h1>
-      <SearchContainer onTermChange={this.handleTermChange} />
+      <h1>Search GIPHYs!</h1>
+      <SearchContainer onTermChange={term => this.handleTermChange(term)} />
       <GiphyList gifs={this.state.gifs} />
       </div>
     );
